@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartbooks - Libros Inteligentes</title>
+    <!-- Tipografías de la guía de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            color: #2B1B17;
+            
+            /* Fondo con superposición elegante */
+            background-color: #FAF7F2;
+            background-image: linear-gradient(rgba(43, 27, 23, 0.45), rgba(91, 15, 26, 0.55)), 
+                              url("imags-icons/fondo.jpg"), 
+                              url("imags-icons/fondo.jpeg"), 
+                              url("imagenes/fondo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Contenedor con fondo blanco sólido para fundirse con el logo */
+        .login-container {
+            background-color: #FFFFFF; /* Mismo blanco que el fondo del logo */
+            padding: 40px 35px;
+            border-radius: 14px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Logo adaptado y fusionado perfectamente */
+        .login-logo {
+            max-width: 190px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 12px auto;
+            mix-blend-mode: multiply; /* Elimina cualquier diferencia de tono blanco */
+        }
+
+        .login-container p {
+            color: #6E5E58;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #D6C7B8;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #FDFBF8;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: #2B1B17;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #5B0F1A;
+            box-shadow: 0 0 0 3px rgba(91, 15, 26, 0.15);
+        }
+
+        .input-group small {
+            display: block;
+            margin-top: 6px;
+            color: #7A1F29;
+            font-size: 0.8em;
+            line-height: 1.3;
+        }
+
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            font-size: 0.88em;
+            color: #4A3E39;
+        }
+
+        .checkbox-group span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            accent-color: #5831e4;
+            cursor: pointer;
+        }
+
+        .checkbox-group a {
+            color: #4136dd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .checkbox-group a:hover {
+            color: #4130dd;
+            text-decoration: underline;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 13px;
+            background-color: #5336d4;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(91, 15, 26, 0.25);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #6145dd;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo de Smartbooks -->
+        <img src="imags-icons/logo.jpeg" alt="Smartbooks - Libros Inteligentes" class="login-logo">
+        <p>Ingresa tus credenciales para acceder</p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Correo Electrónico" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Contraseña" required>
+            </div>
+            <div class="input-group" id="director-code-group" style="display: none;">
+                <input type="password" id="directorCode" placeholder="Código Especial para Administrador/Directivo">
+                <small>Este código es confidencial y exclusivo para directores. Ni estudiantes ni profesores tienen acceso a él.</small>
+            </div>
+            <div class="checkbox-group">
+                <span>
+                    <input type="checkbox" id="isDirector">
+                    <label for="isDirector">Soy Directivo</label>
+                </span>
+                <a href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

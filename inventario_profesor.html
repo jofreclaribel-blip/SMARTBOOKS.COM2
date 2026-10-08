@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Libros</title>
+    <!-- Tipografías de la guía de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2B1B17;
+            margin: 0;
+            padding: 25px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            
+            /* Foto de la Escuela/Biblioteca de fondo */
+            background-color: #FAF7F2;
+            background-image: linear-gradient(rgba(43, 27, 23, 0.45), rgba(91, 15, 26, 0.55)), 
+                              url("imags-icons/fondo.jpg"), 
+                              url("imags-icons/fondo.jpeg"), 
+                              url("imagenes/fondo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 1080px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .search-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .search-filters input {
+            width: 320px;
+            padding: 10px 14px;
+            border: 1px solid #D6C7B8;
+            border-radius: 6px;
+            background-color: #FDFBF8;
+            font-family: 'Inter', sans-serif;
+            color: #2B1B17;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-filters input:focus {
+            border-color: #5B0F1A;
+            box-shadow: 0 0 0 3px rgba(91, 15, 26, 0.12);
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background-color: #F0E6DA;
+            color: #4A3E39;
+            border: 1px solid #E2D2C2;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .filter-btn.active {
+            color: #FFFFFF !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        /* --- COLORES DE LOS BOTONES DE FILTRO --- */
+        .filter-btn[data-filter="Todos"].active { background-color: #5B0F1A; border-color: #5B0F1A; }
+
+        .filter-btn[data-filter="REL"] { border-color: #D32F2F; }
+        .filter-btn[data-filter="REL"].active { background-color: #D32F2F; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="L.F.L"] { border-color: #0D47A1; }
+        .filter-btn[data-filter="L.F.L"].active { background-color: #0D47A1; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="A.D"] { border-color: #7B1FA2; }
+        .filter-btn[data-filter="A.D"].active { background-color: #7B1FA2; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="C.A"] { border-color: #C0392B; }
+        .filter-btn[data-filter="C.A"].active { background-color: #C0392B; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="C.P"] { border-color: #E67E22; }
+        .filter-btn[data-filter="C.P"].active { background-color: #E67E22; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="G.B.H"] { border-color: #E5A910; }
+        .filter-btn[data-filter="G.B.H"].active { background-color: #E5A910; color: #2B1B17 !important; }
+
+        .filter-btn[data-filter="EDUC"] { border-color: #1976D2; }
+        .filter-btn[data-filter="EDUC"].active { background-color: #1976D2; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="C.S"] { border-color: #9C27B0; }
+        .filter-btn[data-filter="C.S"].active { background-color: #9C27B0; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="F.P.L"] { border-color: #FF7F00; }
+        .filter-btn[data-filter="F.P.L"].active { background-color: #FF7F00; color: #FFFFFF !important; }
+
+        .filter-btn[data-filter="G.E.I"] { border-color: #F4C430; }
+        .filter-btn[data-filter="G.E.I"].active { background-color: #F4C430; color: #2B1B17 !important; }
+
+        /* --- TABLA --- */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #EAD8C7;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #F0E6DA;
+        }
+        th {
+            background-color: #5B0F1A;
+            color: #FFFFFF;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        tbody tr:hover {
+            background-color: #FDF8F3;
+        }
+
+        /* --- ETIQUETAS DE MATERIA SEGÚN COLORES DE LAS FOTOS --- */
+        .materia-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.82em;
+            text-align: center;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+        .tag-g-e-i { background-color: #F4C430; color: #2B1B17; } /* Amarillo */
+        .tag-f-p-l { background-color: #FF7F00; color: #FFFFFF; } /* Naranja */
+        .tag-rel   { background-color: #D32F2F; color: #FFFFFF; } /* Rojo */
+        .tag-c-s   { background-color: #9C27B0; color: #FFFFFF; } /* Magenta */
+        .tag-educ  { background-color: #1976D2; color: #FFFFFF; } /* Azul */
+        .tag-c-p   { background-color: #E67E22; color: #FFFFFF; } /* Naranja */
+        .tag-c-a   { background-color: #C0392B; color: #FFFFFF; } /* Rojo Carmesí */
+        .tag-a-d   { background-color: #7B1FA2; color: #FFFFFF; } /* Violeta/Púrpura */
+        .tag-l-f-l { background-color: #0D47A1; color: #FFFFFF; } /* Azul Marino */
+        .tag-g-b-h { background-color: #E5A910; color: #2B1B17; } /* Amarillo Dorado */
+
+        .stars {
+            color: #E67E22;
+            font-size: 1.15em;
+        }
+        .status-disp, .status-uso, .status-des, .status-desuso,
+        .condicion-exc, .condicion-bue, .condicion-reg {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-disp { background-color: #D4AF37; color: #2B1B17; }
+        .status-uso { background-color: #E67E22; color: #FFFFFF; }
+        .status-des, .status-desuso { background-color: #7A1F29; color: #FFFFFF; }
+        
+        .condicion-exc { background-color: #2E7D32; color: #FFFFFF; }
+        .condicion-bue { background-color: #D4AF37; color: #2B1B17; }
+        .condicion-reg { background-color: #7A1F29; color: #FFFFFF; }
+        
+        .online-yes { color: #2E7D32; font-size: 1.3em; font-weight: bold; }
+        .online-no { color: #C0392B; font-size: 1.3em; font-weight: bold; }
+        .popular-yes { color: #D35400; font-size: 1.3em; }
+        .popular-no { color: #C5B8AC; font-size: 1.3em; }
+        
+        .leyenda {
+            margin-top: 25px;
+            padding: 18px 20px;
+            background-color: #F8F3EC;
+            border: 1px solid #EAD8C7;
+            border-radius: 8px;
+        }
+        .leyenda h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-family: 'Playfair Display', serif;
+            color: #5B0F1A;
+            font-size: 1.15em;
+        }
+        .leyenda-materias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.88em;
+        }
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .next-btn {
+            display: block;
+            width: 200px;
+            margin: 25px auto;
+            text-align: center;
+            background-color: #5B0F1A;
+            color: #FFFFFF;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
+        }
+        .next-btn:hover {
+            background-color: #7A1F29;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="search-filters">
+            <input type="text" id="searchInput" placeholder="Buscar por título o materia...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="Todos">Todos</button>
+                <button class="filter-btn" data-filter="REL">Religion</button>
+                <button class="filter-btn" data-filter="L.F.L">Lingüistica-Filologia-lit.</button>
+                <button class="filter-btn" data-filter="A.D">Arte y Deportes</button>
+                <button class="filter-btn" data-filter="C.A">Ciencias Aplicadas</button>
+                <button class="filter-btn" data-filter="C.P">Ciencias Puras</button>
+                <button class="filter-btn" data-filter="G.B.H">Geografia-Biografias-Historia</button>
+                <button class="filter-btn" data-filter="EDUC">Educacion</button>
+                <button class="filter-btn" data-filter="C.S">Ciencias Sociales</button>
+                <button class="filter-btn" data-filter="F.P.L">Filosofia-Psicologia-Logica</button>
+                <button class="filter-btn" data-filter="G.E.I">Generalidades e Informatica</button>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Materia</th>
+                        <th>Calif.</th>
+                        <th>Estado</th>
+                        <th>Condición</th>
+                        <th>Cant.</th>
+                        <th>Online</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="leyenda">
+            <h3>Leyenda de Materias y Estados:</h3>
+            <div class="leyenda-materias">
+                <div class="leyenda-item"><span class="materia-tag tag-rel">REL</span> Religión</div>
+                <div class="leyenda-item"><span class="materia-tag tag-l-f-l">L.F.L</span> Lingüística-Filología-lit.</div>
+                <div class="leyenda-item"><span class="materia-tag tag-a-d">A.D</span> Arte y Deportes</div>
+                <div class="leyenda-item"><span class="materia-tag tag-c-a">C.A</span> Ciencias Aplicadas</div>
+                <div class="leyenda-item"><span class="materia-tag tag-c-p">C.P</span> Ciencias Puras</div>
+                <div class="leyenda-item"><span class="materia-tag tag-g-b-h">G.B.H</span> Geografía-Biografías-Historia</div>
+                <div class="leyenda-item"><span class="materia-tag tag-educ">EDUC</span> Educación</div>
+                <div class="leyenda-item"><span class="materia-tag tag-c-s">C.S</span> Ciencias Sociales</div>
+                <div class="leyenda-item"><span class="materia-tag tag-f-p-l">F.P.L</span> Filosofía-Psicología-Lógica</div>
+                <div class="leyenda-item"><span class="materia-tag tag-g-e-i">G.E.I</span> Generalidades e Informática</div>
+            </div>
+                
+            <p style="margin: 8px 0 0; color: #4A3E39; font-size: 0.88em; line-height: 1.6;">
+                <span class="status-disp">Disp</span> = Disponible |
+                <span class="status-uso">Uso</span> = En uso |
+                <span class="status-des">Desuso</span> |
+                <span class="condicion-exc">Exc</span> = Excelente |
+                <span class="condicion-bue">Bue</span> = Buena |
+                <span class="condicion-reg">Reg</span> = Regular
+            </p>
+        </div>
+    </div>
+    
+    <a href="buscar_libros_alumno.html" class="next-btn">Siguiente</a>
+
+    <script>
+        const booksData = [
+            { titulo: 'Álgebra Lineal', autor: 'González', materia: 'C.P', calificacion: 4.5, estado: 'Disp', condicion: 'Exc', cant: 15, online: true },
+            { titulo: 'Literatura Esp. XX', autor: 'Ruiz', materia: 'L.F.L', calificacion: 4.8, estado: 'Uso', condicion: 'Bue', cant: 8, online: true },
+            { titulo: 'Historia de las Religiones', autor: 'Murphy', materia: 'REL', calificacion: 4.7, estado: 'Disp', condicion: 'Exc', cant: 12, online: false },
+            { titulo: 'Historia Universal', autor: 'Martinez', materia: 'G.B.H', calificacion: 4.3, estado: 'Disp', condicion: 'Reg', cant: 6, online: false },
+            { titulo: 'Cálculo Diferencial', autor: 'Silva', materia: 'C.P', calificacion: 4.2, estado: 'Des', condicion: 'Reg', cant: 3, online: false },
+            { titulo: 'Mantenimiento de Redes', autor: 'Fernández', materia: 'C.A', calificacion: 4.6, estado: 'Disp', condicion: 'Exc', cant: 10, online: true },
+            { titulo: 'Gramática Española', autor: 'Jiménez', materia: 'L.F.L', calificacion: 4.1, estado: 'Disp', condicion: 'Bue', cant: 7, online: false },
+            { titulo: 'Historia del Arte y Pintura', autor: 'Johnson', materia: 'A.D', calificacion: 4.4, estado: 'Uso', condicion: 'Exc', cant: 5, online: true },
+            { titulo: 'Física Clásica', autor: 'Pérez', materia: 'C.P', calificacion: 4.0, estado: 'Disp', condicion: 'Exc', cant: 9, online: true },
+            { titulo: 'Química Orgánica', autor: 'López', materia: 'C.P', calificacion: 4.5, estado: 'Uso', condicion: 'Bue', cant: 4, online: true },
+            { titulo: 'Cien Años de Soledad', autor: 'García Márquez', materia: 'L.F.L', calificacion: 4.9, estado: 'Disp', condicion: 'Exc', cant: 18, online: true },
+            { titulo: 'Sociología y Economía', autor: 'Díaz', materia: 'C.S', calificacion: 3.9, estado: 'Disp', condicion: 'Reg', cant: 10, online: false },
+            { titulo: 'Pedagogía y Didáctica', autor: 'Torres', materia: 'EDUC', calificacion: 4.1, estado: 'Disp', condicion: 'Bue', cant: 11, online: false },
+            { titulo: 'Filosofía y Lógica', autor: 'Ramírez', materia: 'F.P.L', calificacion: 4.6, estado: 'Disp', condicion: 'Exc', cant: 13, online: true },
+            { titulo: 'Geografía General', autor: 'Jones', materia: 'G.B.H', calificacion: 4.5, estado: 'Uso', condicion: 'Bue', cant: 6, online: true },
+            { titulo: 'Educación Física y Deportes', autor: 'Sánchez', materia: 'A.D', calificacion: 4.0, estado: 'Disp', condicion: 'Bue', cant: 14, online: false },
+            { titulo: 'Programación en Python', autor: 'Gómez', materia: 'G.E.I', calificacion: 4.9, estado: 'Disp', condicion: 'Exc', cant: 20, online: true },
+            { titulo: 'Psicología General', autor: 'Davis', materia: 'F.P.L', calificacion: 4.3, estado: 'Disp', condicion: 'Exc', cant: 8, online: true },
+            { titulo: 'Sistemas Informáticos', autor: 'Vargas', materia: 'G.E.I', calificacion: 4.7, estado: 'Uso', condicion: 'Bue', cant: 5, online: false },
+            { titulo: 'Gestión y Tecnología', autor: 'Fernández', materia: 'C.A', calificacion: 4.6, estado: 'Disp', condicion: 'Exc', cant: 9, online: false }
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const inventoryBody = document.getElementById('inventoryBody');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        function renderTable(books) {
+            inventoryBody.innerHTML = '';
+            books.forEach(book => {
+                const row = document.createElement('tr');
+                const stars = '★'.repeat(Math.floor(book.calificacion)) + (book.calificacion % 1 !== 0 ? '½' : '') + '☆'.repeat(5 - Math.ceil(book.calificacion));
+                const materiaSlug = book.materia.toLowerCase().replace(/\./g, '-');
+                
+                row.innerHTML = `
+                    <td><strong>${book.titulo}</strong></td>
+                    <td>${book.autor}</td>
+                    <td><span class="materia-tag tag-${materiaSlug}">${book.materia}</span></td>
+                    <td><span class="stars">${stars}</span><br><small style="color:#7A6B63;">${book.calificacion}</small></td>
+                    <td><span class="status-${book.estado.toLowerCase()}">${book.estado}</span></td>
+                    <td><span class="condicion-${book.condicion.toLowerCase()}">${book.condicion}</span></td>
+                    <td>${book.cant}</td>
+                    <td class="${book.online ? 'online-yes' : 'online-no'}">${book.online ? '✔' : '✖'}</td>
+                `;
+                inventoryBody.appendChild(row);
+            });
+        }
+
+        function handleFilterAndSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+            let filteredBooks = booksData;
+
+            if (activeFilter !== 'Todos') {
+                filteredBooks = filteredBooks.filter(book => book.materia === activeFilter);
+            }
+
+            if (searchTerm) {
+                filteredBooks = filteredBooks.filter(book =>
+                    book.titulo.toLowerCase().includes(searchTerm) ||
+                    book.autor.toLowerCase().includes(searchTerm) ||
+                    book.materia.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderTable(filteredBooks);
+        }
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                handleFilterAndSearch();
+            });
+        });
+
+        searchInput.addEventListener('input', handleFilterAndSearch);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable(booksData);
+        });
+    </script>
+</body>
+</html>

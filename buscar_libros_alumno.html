@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Digital - Con Visor PDF</title>
+    <!-- Tipografías de la guía de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2B1B17;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            
+            /* Foto de la Escuela/Biblioteca de fondo */
+            background-color: #FAF7F2;
+            background-image: linear-gradient(rgba(43, 27, 23, 0.45), rgba(91, 15, 26, 0.55)), 
+                              url("imags-icons/fondo.jpg"), 
+                              url("imags-icons/fondo.jpeg"), 
+                              url("imagenes/fondo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* --- Encabezado Alineado a la Izquierda --- */
+        .header-bg {
+            background-color: #0c0fd6;
+            padding: 30px 20px 48px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 22px;
+            max-width: 920px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .header-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+            background-color: #FFFFFF;
+            padding: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+        .header-text {
+            text-align: left;
+        }
+        .header-text h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0 0 5px;
+            font-size: 2.3em;
+            letter-spacing: 0.5px;
+        }
+        .header-text p {
+            margin: 0;
+            color: #F3EAE0;
+            font-size: 1.05em;
+        }
+
+        /* En celulares */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .header-text {
+                text-align: center;
+            }
+            .header-logo {
+                width: 75px;
+                height: 75px;
+            }
+        }
+
+        /* --- Barra de Búsqueda --- */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-top: -26px;
+            z-index: 10;
+            position: relative;
+        }
+        .search-box {
+            display: flex;
+            width: 650px;
+            max-width: 92%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #EAD8C7;
+            overflow: hidden;
+        }
+        .search-box input {
+            flex-grow: 1;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            color: #2B1B17;
+        }
+        .search-box button {
+            background-color: #5B0F1A;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .search-box button:hover {
+            background-color: #7A1F29;
+        }
+
+        /* --- Contenedor de Resultados / Vistas --- */
+        .results-container {
+            max-width: 920px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .section-header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85em;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        .section-header-subtitle {
+            color: #F3EAE0;
+            font-size: 1.02em;
+            margin-top: 0;
+            margin-bottom: 22px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 12px;
+        }
+
+        /* --- Opciones de Materias (Grid de Botones para Seleccionar Materia) --- */
+        .materias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+        .materia-option-card {
+            border-radius: 12px;
+            padding: 22px 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .materia-option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+            opacity: 0.95;
+        }
+        .materia-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        /* --- Barra de Navegación de la Materia ("Otra Ventana") --- */
+        .materia-view-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            margin-bottom: 25px;
+        }
+        .btn-volver-materias {
+            background-color: #5B0F1A;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 8px rgba(91, 15, 26, 0.3);
+            transition: background-color 0.2s, transform 0.15s;
+        }
+        .btn-volver-materias:hover {
+            background-color: #7A1F29;
+            transform: translateX(-3px);
+        }
+        .current-materia-badge {
+            font-size: 1.15em;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            color: #5B0F1A;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Tarjeta del Libro Principal --- */
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 22px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .book-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.4);
+        }
+        .book-main-content {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+        @media (max-width: 680px) {
+            .book-main-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .book-card .book-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+        .book-card .book-img {
+            width: 95px;
+            height: 130px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+        .book-card .book-info {
+            flex-grow: 1;
+        }
+        .materia-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+        .book-card .book-info h3 {
+            margin: 6px 0 6px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45em;
+        }
+        .book-card .book-info p.author {
+            margin: 0 0 6px;
+            font-weight: 600;
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+        .book-card .book-info p.desc {
+            margin: 0;
+            font-size: 0.92em;
+            line-height: 1.45;
+            opacity: 0.92;
+        }
+        .book-card .book-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 125px;
+        }
+        .book-card .btn-ver, .book-card .btn-guardar, .btn-sublibro-ver {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.92em;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.15s, opacity 0.15s;
+        }
+        .book-card .btn-ver:hover, .book-card .btn-guardar:hover, .btn-sublibro-ver:hover {
+            transform: scale(1.03);
+            opacity: 0.95;
+        }
+
+        /* --- Sección de Sublibros y Módulos --- */
+        .sublibros-section {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.4);
+        }
+        .sublibros-header {
+            font-size: 0.92em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sublibros-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sublibro-card {
+            background-color: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .sublibro-details {
+            flex-grow: 1;
+        }
+        .sublibro-title {
+            font-weight: 700;
+            font-size: 1.05em;
+            margin: 0 0 3px 0;
+        }
+        .sublibro-desc {
+            font-size: 0.88em;
+            margin: 0;
+            opacity: 0.92;
+        }
+        .sublibro-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* --- Modal Visor de PDF --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(43, 27, 23, 0.75);
+            backdrop-filter: blur(5px);
+            padding-top: 10px;
+        }
+        .modal-content {
+            background-color: #FFFFFF;
+            margin: 2% auto;
+            padding: 15px 20px;
+            border: 1px solid #EAD8C7;
+            width: 90%;
+            max-width: 950px; 
+            height: 90vh;
+            border-radius: 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .modal-close {
+            color: #8C7B75;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 101;
+            transition: color 0.2s;
+        }
+        .modal-close:hover, .modal-close:focus {
+            color: #5B0F1A;
+            text-decoration: none;
+        }
+        .modal-iframe {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #EAD8C7;
+            border-radius: 6px;
+        }
+        
+        /* --- Sección Libros Requeridos --- */
+        .required-books-section {
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 40px;
+            backdrop-filter: blur(8px);
+        }
+        .required-books-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: #5B0F1A; 
+            margin-bottom: 20px;
+            border-bottom: 2px solid #F3EAE0;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #4A3E39;
+            font-size: 0.9em;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #D6C7B8;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.95em;
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #2B1B17;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #5B0F1A;
+            box-shadow: 0 0 0 3px rgba(91, 15, 26, 0.12);
+        }
+        .btn-pedir {
+            width: 100%;
+            padding: 13px;
+            background-color: #5B0F1A;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 12px rgba(91, 15, 26, 0.25);
+        }
+        .btn-pedir:hover {
+            background-color: #7A1F29;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado con Logo Smartbooks -->
+    <div class="header-bg">
+        <div class="header-content">
+            <img src="imags-icons/logo.jpeg" alt="Logo Smartbooks" class="header-logo">
+            <div class="header-text">
+                <h1>Biblioteca Digital</h1>
+                <p>Revisa contenido y solicita material educativo para tu cátedra.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buscador Principal -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar materia, libro, tema o sublibro...">
+            <button id="searchButton">Buscar</button>
+        </div>
+    </div>
+
+    <div class="results-container">
+        
+        <!-- VISTA 1: Opciones de Materias -->
+        <div id="materias-view">
+            <h2 class="section-header-title" id="materias-title">Materias Disponibles</h2>
+            <p class="section-header-subtitle" id="materias-subtitle">Elige una materia como opción para ingresar y ver todos sus libros y sublibros correspondientes:</p>
+            <div class="materias-grid" id="materias-grid">
+                <!-- Se inyectan dinámicamente los botones de materias -->
+            </div>
+        </div>
+
+        <!-- VISTA 2: Libros y Sublibros de la Materia Seleccionada ("Otra Ventana") -->
+        <div id="libros-view" style="display: none;">
+            <div class="materia-view-nav">
+                <button id="btnVolverMaterias" class="btn-volver-materias">
+                    &#8592; Volver a Materias
+                </button>
+                <div class="current-materia-badge" id="current-materia-label">
+                    <!-- Título de la materia activa -->
+                </div>
+            </div>
+
+            <div id="books-list-container">
+                <!-- Se inyectan dinámicamente los libros y sublibros -->
+            </div>
+        </div>
+
+        <!-- Sección Libros Requeridos -->
+        <div class="required-books-section">
+            <h3>Libros Requeridos: ¿No encuentras lo que buscas?</h3>
+            <form id="required-book-form">
+                <div class="form-group">
+                    <label for="profesor-name">Tu Nombre</label>
+                    <input type="text" id="profesor-name" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="required-title">Título del Libro Requerido</label>
+                    <input type="text" id="required-title" placeholder="Ej: La Odisea de Homero" required>
+                </div>
+                <div class="form-group">
+                    <label for="required-author">Autor (Si lo conoces)</label>
+                    <input type="text" id="required-author" placeholder="Ej: Homero">
+                </div>
+                <div class="form-group">
+                    <label for="required-reason">Motivo y Curso al que está destinado</label>
+                    <textarea id="required-reason" rows="3" placeholder="Necesario para el taller de 5to 1ra..." required></textarea>
+                </div>
+                <button type="submit" class="btn-pedir">Pedir Libro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Visor de PDF -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3 style="text-align: center; color: #5B0F1A; font-family: 'Playfair Display', serif; margin-top: 5px;">Visualizando: <span id="modal-title-visor"></span></h3>
+            <iframe id="modal-pdf-viewer" class="modal-iframe" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS COMPLETA DE MATERIAS, LIBROS Y SUBLIBROS ---
+        const materiasData = [
+            {
+                id: 'lengua',
+                nombre: 'Lengua y Literatura',
+                descripcion: 'Tipología textual, géneros literarios, análisis de textos de ficción, no ficción y argumentación.',
+                libros: [
+                    {
+                        titulo: 'Lengua y Literatura',
+                        autor: 'Diego Hernán Rosain',
+                        imagen: 'imags-icons/leng.jpg',
+                        descripcion: 'Libro de texto de Lengua y Literatura para la Educación Popular de Jóvenes y Adultos. Se organiza en torno a géneros y tipos de textos (narrativo, descriptivo, explicativo y argumentativo).',
+                        pdf: 'pdfs/Lengua-y-literatura.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Módulo 1: Géneros Narrativo y Descriptivo',
+                                descripcion: 'Análisis de textos de ficción, estructuras narrativas y técnicas descriptivas.',
+                                pdf: 'pdfs/Lengua-y-literatura.pdf'
+                            },
+                            {
+                                titulo: 'Módulo 2: Texto Explicativo y Argumentativo',
+                                descripcion: 'Estrategias de argumentación, ensayo, géneros periodísticos y análisis crítico.',
+                                pdf: 'pdfs/Lengua-y-literatura.pdf'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'informatica',
+                nombre: 'Informática y Redes de Datos',
+                descripcion: 'Protocolos fundamentales, modelos OSI y TCP/IP y conectividad en redes modernas.',
+                libros: [
+                    {
+                        titulo: 'Redes de Datos',
+                        autor: 'Mónica Cristina Liberatori',
+                        imagen: 'imags-icons/redes.jpg',
+                        descripcion: 'El libro se titula "Redes de Datos y sus Protocolos". Se centra en el estudio y la descripción detallada de los protocolos fundamentales utilizados en las redes de datos modernas.',
+                        pdf: 'pdfs/redes de datos.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Cuadernillo 1: Capas y Protocolos Fundamentales',
+                                descripcion: 'Estructura de paquetes, direccionamiento IP y enrutamiento en redes de datos.',
+                                pdf: 'pdfs/redes de datos.pdf'
+                            },
+                            {
+                                titulo: 'Cuadernillo 2: Seguridad y Servicios de Red',
+                                descripcion: 'Criptografía básica, transporte fiable y protocolos de aplicación.',
+                                pdf: 'pdfs/redes de datos.pdf'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'gestion',
+                nombre: 'Gestión de Empresas',
+                descripcion: 'Metodologías de innovación organizacional, procesos tecnológicos y modelos de gestión corporativa.',
+                libros: [
+                    {
+                        titulo: 'Gestión de Tecnología e Innovación',
+                        autor: 'Efrain Ortiz Pabón y Nofal Nagles García',
+                        imagen: 'imags-icons/gest.jpg',
+                        descripcion: 'Texto sobre Gestión de Tecnología e Innovación (Teoría, Proceso y Práctica). Ofrece una referencia fundamental para comprender y aplicar las metodologías de gestión tecnológica.',
+                        pdf: 'pdfs/gestion.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Fascículo 1: Fundamentos de la Gestión Tecnológica',
+                                descripcion: 'Estrategias competitivas y transferencia de tecnología empresarial.',
+                                pdf: 'pdfs/gestion.pdf'
+                            },
+                            {
+                                titulo: 'Fascículo 2: Práctica del Proceso de Innovación',
+                                descripcion: 'Metodologías ágiles, casos reales y desarrollo de proyectos innovadores.',
+                                pdf: 'pdfs/gestion.pdf'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'matematicas',
+                nombre: 'Matemáticas',
+                descripcion: 'Aritmética, álgebra, trigonometría y cálculo integrando herramientas de software libre como GeoGebra y Maxima.',
+                libros: [
+                    {
+                        titulo: 'Matemáticas Básicas (Con Software Libre)',
+                        autor: 'JOSÉ A VALLEJO y ANTONIO MORANTE',
+                        imagen: 'imags-icons/mat.jpg',
+                        descripcion: 'Cubre 11 capítulos de matemáticas básicas (Aritmética, Álgebra, Trigonometría, Geometría Analítica), incluyendo ejercicios con software libre como Maxima y GeoGebra.',
+                        pdf: 'pdfs/matemáticas.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Tomo 1: Aritmética y Álgebra Fundamental',
+                                descripcion: 'Operaciones numéricas, polinomios, factorización y sistemas de ecuaciones.',
+                                pdf: 'pdfs/matemáticas.pdf'
+                            },
+                            {
+                                titulo: 'Tomo 2: Trigonometría, Geometría y Software Libre',
+                                descripcion: 'Funciones trigonométricas, geometría analítica y prácticas interactivas con GeoGebra.',
+                                pdf: 'pdfs/matemáticas.pdf'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'ciencias',
+                nombre: 'Ciencias y Mantenimiento',
+                descripcion: 'Arquitectura física del PC, diagnóstico preventivo, instalación de sistemas operativos y resolución de fallas.',
+                libros: [
+                    {
+                        titulo: 'Mantenimiento de Computadores',
+                        autor: 'Stiven Armero Kreisberger',
+                        imagen: 'imags-icons/mante.jpg',
+                        descripcion: 'Manual práctico sobre Mantenimiento de Computadores: diagnóstico de fallas, arquitectura del PC, instalación y configuración de sistemas operativos.',
+                        pdf: 'pdfs/mantenimiento.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Guía Práctica 1: Hardware y Diagnóstico de Fallas',
+                                descripcion: 'Identificación de componentes internos, testeo de placas y fuentes de energía.',
+                                pdf: 'pdfs/mantenimiento.pdf'
+                            },
+                            {
+                                titulo: 'Guía Práctica 2: Sistemas Operativos y Software Base',
+                                descripcion: 'Instalación limpia, controladores, particionado de discos y utilidades esenciales.',
+                                pdf: 'pdfs/mantenimiento.pdf'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'autogestion',
+                nombre: 'Autogestión en el Mercado',
+                descripcion: 'Experiencias de empresas recuperadas, sociología laboral y economía popular organizada en Argentina.',
+                libros: [
+                    {
+                        titulo: 'Autogestión Movilizada',
+                        autor: 'María Inés Fernández Álvarez y Julián Rebón',
+                        imagen: 'imags-icons/auto.jpg',
+                        descripcion: 'Aborda el fenómeno de la autogestión movilizada en Argentina: las empresas recuperadas y la economía popular tras la desestructuración de la sociedad salarial.',
+                        pdf: 'pdfs/Autogestion-movilizada.pdf',
+                        sublibros: [
+                            {
+                                titulo: 'Sección 1: Las Empresas Recuperadas',
+                                descripcion: 'Historia, organización asamblearia y sostenimiento colectivo de la producción.',
+                                pdf: 'pdfs/Autogestion-movilizada.pdf'
+                            },
+                            {
+                                titulo: 'Sección 2: Economía Popular y Territorio',
+                                descripcion: 'Nuevas formas de trabajo, cooperativismo y demandas colectivas.',
+                                pdf: 'pdfs/Autogestion-movilizada.pdf'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // --- PALETA DE COLORES OFICIALES SEGÚN MATERIA ---
+        function getMateriaColor(materia) {
+            const m = (materia || '').toLowerCase();
+            
+            // 1. Lengua y Literatura / Informática (Dorado)
+            if (m.includes('leng') || m.includes('lit') || m.includes('infor') || m.includes('redes')) {
+                return { 
+                    cardBg: '#D4AF37',
+                    title: '#3A1E02',
+                    author: '#4A2A04',
+                    desc: '#4A2A04',
+                    badgeBg: '#5B0F1A',
+                    badgeText: '#FFFFFF',
+                    btnVerBg: '#5B0F1A',
+                    btnVerText: '#FFFFFF',
+                    btnGuardarBg: '#FFFFFF',
+                    btnGuardarText: '#5B0F1A'
+                };
+            }
+            // 2. Ciencias Sociales / Gestión de Empresas / Autogestión (Magenta Vino)
+            if (m.includes('empresa') || m.includes('social') || m.includes('gestion')) {
+                return { 
+                    cardBg: '#B03A6B',
+                    title: '#FFFFFF',
+                    author: '#FDEFF5',
+                    desc: '#FDEFF5',
+                    badgeBg: '#D4AF37',
+                    badgeText: '#2B1B17',
+                    btnVerBg: '#5B0F1A',
+                    btnVerText: '#FFFFFF',
+                    btnGuardarBg: '#FFFFFF',
+                    btnGuardarText: '#B03A6B'
+                };
+            }
+            // 3. Matemáticas (Naranja)
+            if (m.includes('mat') || m.includes('pura')) {
+                return { 
+                    cardBg: '#E67E22',
+                    title: '#FFFFFF',
+                    author: '#FFF0E3',
+                    desc: '#FFF0E3',
+                    badgeBg: '#5B0F1A',
+                    badgeText: '#FFFFFF',
+                    btnVerBg: '#5B0F1A',
+                    btnVerText: '#FFFFFF',
+                    btnGuardarBg: '#FFFFFF',
+                    btnGuardarText: '#E67E22'
+                };
+            }
+            // 4. Ciencias Aplicadas / Mantenimiento (Rojo Carmesí)
+            if (m.includes('cien') || m.includes('mante')) {
+                return { 
+                    cardBg: '#C0392B',
+                    title: '#FFFFFF',
+                    author: '#FDECEC',
+                    desc: '#FDECEC',
+                    badgeBg: '#D4AF37',
+                    badgeText: '#2B1B17',
+                    btnVerBg: '#5B0F1A',
+                    btnVerText: '#FFFFFF',
+                    btnGuardarBg: '#FFFFFF',
+                    btnGuardarText: '#C0392B'
+                };
+            }
+            // 5. Autogestión / Por Defecto (Borgoña)
+            return { 
+                cardBg: '#5B0F1A',
+                title: '#FFFFFF',
+                author: '#F7EDED',
+                desc: '#F7EDED',
+                badgeBg: '#D4AF37',
+                badgeText: '#2B1B17',
+                btnVerBg: '#FFFFFF',
+                btnVerText: '#5B0F1A',
+                btnGuardarBg: '#D4AF37',
+                btnGuardarText: '#2B1B17'
+            };
+        }
+
+        // Elementos DOM
+        const materiasView = document.getElementById('materias-view');
+        const librosView = document.getElementById('libros-view');
+        const materiasGrid = document.getElementById('materias-grid');
+        const materiasTitle = document.getElementById('materias-title');
+        const materiasSubtitle = document.getElementById('materias-subtitle');
+        const currentMateriaLabel = document.getElementById('current-materia-label');
+        const booksListContainer = document.getElementById('books-list-container');
+        const btnVolverMaterias = document.getElementById('btnVolverMaterias');
+
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        // Modal PDF
+        const bookModal = document.getElementById('bookModal');
+        const modalCloseBtn = document.querySelector('.modal-close');
+        const modalTitleVisor = document.getElementById('modal-title-visor'); 
+        const modalPdfViewer = document.getElementById('modal-pdf-viewer');
+
+        // Formulario
+        const requiredBookForm = document.getElementById('required-book-form');
+        const profesorNameInput = document.getElementById('profesor-name');
+        const requiredTitleInput = document.getElementById('required-title');
+        const requiredAuthorInput = document.getElementById('required-author');
+        const requiredReasonTextarea = document.getElementById('required-reason');
+
+        // --- RENDERIZAR LAS OPCIONES DE MATERIAS (SOLO NOMBRE DE LA MATERIA) ---
+        function renderMaterias(list = materiasData, isFiltered = false) {
+            materiasGrid.innerHTML = '';
+            
+            if (isFiltered) {
+                materiasTitle.textContent = `Opciones Encontradas (${list.length} materias)`;
+                materiasSubtitle.textContent = 'Selecciona una de las opciones para ingresar a sus libros y sublibros:';
+            } else {
+                materiasTitle.textContent = 'Materias Disponibles';
+                materiasSubtitle.textContent = 'Elige una materia como opción para ingresar y ver todos sus libros y sublibros correspondientes:';
+            }
+
+            if (list.length === 0) {
+                materiasGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; background: rgba(255,255,255,0.9); padding: 25px; border-radius: 12px; text-align: center;">
+                        <p style="font-size: 1.1em; color: #5B0F1A; margin: 0 0 10px 0; font-weight: 600;">
+                            No encontramos ninguna materia o libro con ese término de búsqueda.
+                        </p>
+                        <p style="margin: 0; color: #4A3E39;">Prueba con otra palabra o solicita el libro que necesitas en el formulario de abajo.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(materia => {
+                const colorInfo = getMateriaColor(materia.nombre);
+
+                // Botón/Opción con únicamente el nombre de la materia (sin íconos ni fotos)
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'materia-option-card';
+                card.style.backgroundColor = colorInfo.cardBg;
+                card.style.color = colorInfo.title;
+
+                card.innerHTML = `
+                    <span class="materia-card-title" style="color: ${colorInfo.title};">${materia.nombre}</span>
+                `;
+
+                card.addEventListener('click', () => {
+                    abrirMateria(materia);
+                });
+
+                materiasGrid.appendChild(card);
+            });
+        }
+
+        // --- ABRIR LA VISTA ("OTRA VENTANA") DE UNA MATERIA ---
+        function abrirMateria(materia) {
+            materiasView.style.display = 'none';
+            librosView.style.display = 'block';
+
+            currentMateriaLabel.innerHTML = `Materia: <strong>${materia.nombre}</strong>`;
+            booksListContainer.innerHTML = '';
+
+            const colorInfo = getMateriaColor(materia.nombre);
+
+            if (!materia.libros || materia.libros.length === 0) {
+                booksListContainer.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.95); padding: 25px; border-radius: 12px; text-align: center;">
+                        <p style="color: #5B0F1A; font-weight: 700; font-size: 1.1em;">Aún no hay libros cargados en esta materia.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            materia.libros.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.style.backgroundColor = colorInfo.cardBg;
+                card.style.color = colorInfo.title;
+
+                let sublibrosHTML = '';
+                if (book.sublibros && book.sublibros.length > 0) {
+                    sublibrosHTML = `
+                        <div class="sublibros-section">
+                            <div class="sublibros-header" style="color: ${colorInfo.title};">
+                                📑 Sublibros y Módulos de esta materia (${book.sublibros.length}):
+                            </div>
+                            <div class="sublibros-list">
+                                ${book.sublibros.map((sub) => `
+                                    <div class="sublibro-card">
+                                        <div class="sublibro-details">
+                                            <p class="sublibro-title" style="color: ${colorInfo.title};">
+                                                &#9656; ${sub.titulo}
+                                            </p>
+                                            <p class="sublibro-desc" style="color: ${colorInfo.desc};">
+                                                ${sub.descripcion}
+                                            </p>
+                                        </div>
+                                        <div class="sublibro-actions">
+                                            <button class="btn-sublibro-ver btn-ver-pdf" 
+                                                data-title="${sub.titulo} (${materia.nombre})" 
+                                                data-pdf="${sub.pdf}" 
+                                                style="background-color: ${colorInfo.btnVerBg}; color: ${colorInfo.btnVerText};">
+                                                Ver Sublibro (PDF)
+                                            </button>
+                                            <button class="btn-sublibro-ver btn-guardar-item" 
+                                                data-title="${sub.titulo}" 
+                                                style="background-color: ${colorInfo.btnGuardarBg}; color: ${colorInfo.btnGuardarText};">
+                                                Guardar
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="book-main-content">
+                        <img class="book-img" src="${book.imagen}" alt="Portada de ${book.titulo}" onerror="this.src='imags-icons/fondo.jpg'">
+                        <div class="book-info">
+                            <span class="materia-badge" style="background-color: ${colorInfo.badgeBg}; color: ${colorInfo.badgeText};">
+                                ${materia.nombre}
+                            </span>
+                            <h3 style="color: ${colorInfo.title};">${book.titulo}</h3>
+                            <p class="author" style="color: ${colorInfo.author};">por ${book.autor}</p>
+                            <p class="desc" style="color: ${colorInfo.desc};">${book.descripcion}</p>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-ver btn-ver-pdf" data-title="${book.titulo}" data-pdf="${book.pdf}" style="background-color: ${colorInfo.btnVerBg}; color: ${colorInfo.btnVerText};">
+                                Ver (PDF)
+                            </button>
+                            <button class="btn-guardar btn-guardar-item" data-title="${book.titulo}" style="background-color: ${colorInfo.btnGuardarBg}; color: ${colorInfo.btnGuardarText};">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                    ${sublibrosHTML}
+                `;
+
+                booksListContainer.appendChild(card);
+            });
+
+            // Asignar eventos de PDFs y Guardar
+            booksListContainer.querySelectorAll('.btn-ver-pdf').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const title = e.currentTarget.dataset.title;
+                    const pdfPath = e.currentTarget.dataset.pdf;
+                    abrirVisorPdf(title, pdfPath);
+                });
+            });
+
+            booksListContainer.querySelectorAll('.btn-guardar-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const title = e.currentTarget.dataset.title;
+                    alert(`¡"${title}" ha sido guardado exitosamente en tu lista!`);
+                });
+            });
+
+            librosView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // --- VOLVER A LA VISTA DE OPCIONES DE MATERIA ---
+        btnVolverMaterias.addEventListener('click', () => {
+            librosView.style.display = 'none';
+            materiasView.style.display = 'block';
+            materiasView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // --- VISOR DE PDF ---
+        function abrirVisorPdf(title, pdfPath) {
+            modalTitleVisor.textContent = title;
+            modalPdfViewer.src = pdfPath;
+            bookModal.style.display = 'block';
+        }
+
+        modalCloseBtn.addEventListener('click', () => {
+            bookModal.style.display = 'none';
+            modalPdfViewer.src = '';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === bookModal) {
+                bookModal.style.display = 'none';
+                modalPdfViewer.src = ''; 
+            }
+        });
+
+        // --- BÚSQUEDA INTELIGENTE DE MATERIAS Y LIBROS ---
+        function handleSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            librosView.style.display = 'none';
+            materiasView.style.display = 'block';
+
+            if (!query) {
+                renderMaterias(materiasData, false);
+                return;
+            }
+
+            const filtered = materiasData.filter(m => {
+                const matchMateria = m.nombre.toLowerCase().includes(query) || m.descripcion.toLowerCase().includes(query);
+                
+                const matchLibros = m.libros.some(libro => {
+                    const matchBookTitle = libro.titulo.toLowerCase().includes(query);
+                    const matchAuthor = libro.autor.toLowerCase().includes(query);
+                    const matchSublibros = libro.sublibros && libro.sublibros.some(sub => 
+                        sub.titulo.toLowerCase().includes(query) || sub.descripcion.toLowerCase().includes(query)
+                    );
+                    return matchBookTitle || matchAuthor || matchSublibros;
+                });
+
+                return matchMateria || matchLibros;
+            });
+
+            renderMaterias(filtered, true);
+        }
+
+        searchButton.addEventListener('click', handleSearch);
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim() === '') {
+                renderMaterias(materiasData, false);
+            }
+        });
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMaterias(materiasData, false);
+        });
+
+        // --- FORMULARIO DE LIBROS REQUERIDOS ---
+        requiredBookForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const profesorName = profesorNameInput.value;
+            const requiredTitle = requiredTitleInput.value;
+            const requiredAuthor = requiredAuthorInput.value;
+            const requiredReason = requiredReasonTextarea.value;
+
+            const nuevaSolicitud = {
+                name: profesorName,
+                title: requiredTitle,
+                author: requiredAuthor || 'No especificado',
+                reason: requiredReason,
+                date: new Date().toLocaleDateString('es-AR')
+            };
+
+            const SOLICITUDES_KEY = 'solicitudesRequeridas';
+            const existingSolicitudes = JSON.parse(localStorage.getItem(SOLICITUDES_KEY)) || [];
+            existingSolicitudes.push(nuevaSolicitud);
+            localStorage.setItem(SOLICITUDES_KEY, JSON.stringify(existingSolicitudes));
+            
+            const message = `SOLICITUD DE LIBRO ENVIADA:\n\n` +
+                            `Profesor/a: ${profesorName}\n` +
+                            `Título Requerido: ${requiredTitle}\n` +
+                            `Autor: ${nuevaSolicitud.author}\n` +
+                            `Motivo: ${requiredReason}\n\n` +
+                            `¡Notificación enviada con éxito! El pedido ha sido guardado localmente.`;
+            
+            alert(message);
+            requiredBookForm.reset();
+        });
+    </script>
+</body>
+</html>

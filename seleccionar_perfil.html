@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Perfil</title>
+    <!-- Tipografías de la guía de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            
+            /* Foto de la Escuela/Biblioteca de fondo */
+            background-color: #FAF7F2;
+            background-image: linear-gradient(rgba(43, 27, 23, 0.45), rgba(91, 15, 26, 0.55)), 
+                              url("imags-icons/fondo.jpg"), 
+                              url("imags-icons/fondo.jpeg"), 
+                              url("imagenes/fondo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .profile-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .profile-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 210px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #2B1B17;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .profile-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 18px 45px rgba(91, 15, 26, 0.45);
+            border-color: #5B0F1A;
+            background-color: #FFFFFF;
+        }
+        .profile-card img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 18px;
+            border-radius: 50%;
+            padding: 4px;
+            background-color: #FDFBF8;
+            border: 2px solid #D4AF37;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        .profile-card:hover img {
+            transform: scale(1.05);
+        }
+        .profile-card h3 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: #5B0F1A;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <a class="profile-card" href="profesor.html">
+            <img src="imags-icons/profesor.jpg" alt="Profesor Icon">
+            <h3>Profesor</h3>
+        </a>
+        
+        <a class="profile-card" href="alumno.html">
+            <img src="imags-icons/alumno.jpg" alt="Alumno Icon">
+            <h3>Alumno</h3>
+        </a>
+    </div>
+</body>
+</html>

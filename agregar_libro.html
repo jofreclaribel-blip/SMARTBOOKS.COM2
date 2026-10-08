@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar/Editar Libro</title>
+    <!-- Tipografías de la guía de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2B1B17;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            
+            /* Foto de la Escuela/Biblioteca de fondo */
+            background-color: #FAF7F2;
+            background-image: linear-gradient(rgba(43, 27, 23, 0.45), rgba(91, 15, 26, 0.55)), 
+                              url("imags-icons/fondo.jpg"), 
+                              url("imags-icons/fondo.jpeg"), 
+                              url("imagenes/fondo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .navbar {
+             background-color: #0c0fd6;
+            padding: 14px 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+        }
+        .navbar .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .search-box input {
+            padding: 8px 14px;
+            border: 1px solid #EAD8C7;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+        }
+        .navbar .settings-btn {
+            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        .navbar .settings-btn:hover {
+            background-color: rgba(255, 255, 255, 0.28);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #EAD8C7;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(91, 15, 26, 0.2);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+        .dropdown-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown-menu ul li a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #3A2A28;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95em;
+        }
+        .dropdown-menu ul li a:hover {
+            background-color: #F8F3EC;
+            color: #5B0F1A;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 35px;
+            border-radius: 14px;
+            border: 1px solid #EAD8C7;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            color: #5B0F1A;
+            font-size: 1.7em;
+            letter-spacing: 0.5px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #4A3E39;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D6C7B8;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #FDFBF8;
+            font-family: 'Inter', sans-serif;
+            color: #2B1B17;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #5B0F1A;
+            box-shadow: 0 0 0 3px rgba(91, 15, 26, 0.12);
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        .form-actions .btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-cancel {
+            background-color: #8C7B75;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #75655F;
+        }
+        .btn-save {
+            background-color: #5B0F1A;
+            color: white;
+            box-shadow: 0 4px 12px rgba(91, 15, 26, 0.25);
+        }
+        .btn-save:hover {
+            background-color: #7A1F29;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>SMARTBOOKS</h1>
+        <div class="search-box">
+            <button class="settings-btn" id="settingsBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 4.22 18.2l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82z"></path></svg>
+            </button>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <ul>
+                <li><a href="director.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Inicio
+                </a></li>
+                <li><a href="gestion_pedidos.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    Libros Requeridos
+                </a></li>
+                <li><a href="ver_inventario.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H4a2.5 2.5 0 0 0-2.5 2.5v10A2.5 2.5 0 0 0 4 19.5z"></path></svg>
+                    Ver Inventario
+                </a></li>
+                <li style="border-top: 1px solid #EAD8C7;"><a href="index.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Cerrar Sesión
+                </a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 id="form-title">Agregar Nuevo Libro</h2>
+        <form id="libro-form">
+            <div class="form-group">
+                <label for="titulo">Título del Libro</label>
+                <input type="text" id="titulo" required>
+            </div>
+            <div class="form-group">
+                <label for="autor">Autor (Apellido/Nombre)</label>
+                <input type="text" id="autor" required>
+            </div>
+            <div class="form-group">
+                <label for="editorial">Editorial</label>
+                <input type="text" id="editorial" required>
+            </div>
+            <div class="form-group">
+                <label for="lugar">Lugar</label>
+                <input type="text" id="lugar">
+            </div>
+            <div class="form-group">
+                <label for="anio">Año</label>
+                <input type="number" id="anio">
+            </div>
+            <div class="form-group">
+                <label for="paginas">Págs</label>
+                <input type="number" id="paginas">
+            </div>
+            <div class="form-group">
+                <label for="cantidad">Cant</label>
+                <input type="number" id="cantidad" required>
+            </div>
+            <div class="form-group">
+                <label for="tamano">Tamaño</label>
+                <input type="text" id="tamano">
+            </div>
+            <div class="form-group">
+                <label for="precio">Precio</label>
+                <input type="text" id="precio">
+            </div>
+            <div class="form-actions">
+                <a href="ver_inventario.html" class="btn btn-cancel">Cancelar</a>
+                <button type="submit" class="btn btn-save">Guardar Libro</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const settingsBtn = document.getElementById('settingsBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const formTitle = document.getElementById('form-title');
+        const libroForm = document.getElementById('libro-form');
+        let isEditing = false;
+        let libroToEditId = null;
+
+        // Función para cargar los libros desde localStorage (la misma que en ver_inventario.html)
+        function loadBooks() {
+            const storedBooks = localStorage.getItem('books');
+            return storedBooks ? JSON.parse(storedBooks) : [];
+        }
+
+        // Función para guardar los libros en localStorage (la misma que en ver_inventario.html)
+        function saveBooks(books) {
+            localStorage.setItem('books', JSON.stringify(books));
+        }
+
+        // Detectar si la página se carga con un ID de libro para editar
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            libroToEditId = params.get('id');
+
+            if (libroToEditId) {
+                isEditing = true;
+                formTitle.textContent = 'Editar Libro';
+                const books = loadBooks();
+                const book = books.find(b => b.id === libroToEditId);
+                
+                if (book) {
+                    document.getElementById('titulo').value = book.titulo;
+                    document.getElementById('autor').value = book.autor;
+                    document.getElementById('editorial').value = book.editorial;
+                    document.getElementById('lugar').value = book.lugar;
+                    document.getElementById('anio').value = book.anio;
+                    document.getElementById('paginas').value = book.pags;
+                    document.getElementById('cantidad').value = book.cant;
+                    document.getElementById('tamano').value = book.tamano;
+                    document.getElementById('precio').value = book.precio;
+                }
+            }
+        });
+
+        // Manejar el envío del formulario
+        libroForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let books = loadBooks();
+            const fechaActual = new Date().toLocaleDateString('es-ES');
+
+            const newBookData = {
+                titulo: document.getElementById('titulo').value,
+                autor: document.getElementById('autor').value,
+                editorial: document.getElementById('editorial').value,
+                lugar: document.getElementById('lugar').value,
+                anio: document.getElementById('anio').value,
+                pags: document.getElementById('paginas').value,
+                cant: document.getElementById('cantidad').value,
+                tamano: document.getElementById('tamano').value,
+                precio: document.getElementById('precio').value,
+                fecha: fechaActual
+            };
+
+            if (isEditing) {
+                // Lógica para editar un libro existente
+                const libroIndex = books.findIndex(b => b.id === libroToEditId);
+                if (libroIndex !== -1) {
+                    books[libroIndex] = { ...books[libroIndex], ...newBookData };
+                    alert(`Libro "${newBookData.titulo}" editado con éxito.`);
+                }
+            } else {
+                // Lógica para agregar un nuevo libro
+                const newId = `ESC-${(books.length + 1).toString().padStart(3, '0')}-24`;
+                const newNoLibro = (books.length + 1).toString().padStart(3, '0');
+                const newBook = { id: newId, noLibro: newNoLibro, ...newBookData };
+                books.push(newBook);
+                alert(`Libro "${newBookData.titulo}" agregado con éxito.`);
+            }
+
+            saveBooks(books);
+            window.location.href = 'ver_inventario.html';
+        });
+
+        // Event listener para el menú de navegación
+        settingsBtn.addEventListener('click', () => {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!settingsBtn.contains(e.target) && !dropdownMenu.contains(e.target) && dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
